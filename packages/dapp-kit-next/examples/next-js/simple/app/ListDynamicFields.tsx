@@ -1,10 +1,11 @@
 'use client';
 
 import { useDAppKit } from '@mysten/dapp-kit-react';
+import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { useState } from 'react';
 
 export function ListDynamicFields() {
-	const dAppKit = useDAppKit();
+	// const dAppKit = useDAppKit();
 	const [parent, setParent] = useState('');
 	const [results, setResults] = useState<string[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -18,9 +19,10 @@ export function ListDynamicFields() {
 		setLoading(true);
 		setError(null);
 		setResults([]);
+		const grpcClient = new SuiGrpcClient({ network:"testnet", baseUrl: "https://fullnode.testnet.sui.io:443" });
 
 		try {
-			const { response } = await dAppKit.getClient().stateService.listDynamicFields({
+			const { response } = await grpcClient.stateService.listDynamicFields({
 				parent,
 				readMask: { paths: ["child_object"] },
 			});
